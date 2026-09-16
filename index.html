@@ -349,6 +349,7 @@
     <h2 id="result-title">真相大白</h2>
     <p id="success-text"></p>
     <div class="order-tag" id="order-tag" style="display:none;"></div>
+    <button class="btn-ghost" id="retry-btn" style="display:none;">偷改一下</button>
   </div>
 
   <footer>南港雅悅旗艦館 馥儷廳 · 2026.10.25</footer>
@@ -569,6 +570,13 @@ document.getElementById('reveal-final-btn').addEventListener('click', () => {
   evaluateFinal();
 });
 
+document.getElementById('retry-btn').addEventListener('click', () => {
+  document.getElementById('success-screen').style.display = 'none';
+  document.getElementById('game-area').style.display = 'block';
+  renderLetterBank();
+  renderPuzzles();
+});
+
 async function evaluateFinal(){
   const allCorrect = CONFIG.puzzles.every((p, i) => normalize(answersGiven[i]) === normalize(p.answer));
 
@@ -578,6 +586,7 @@ async function evaluateFinal(){
   const titleEl = document.getElementById('result-title');
   const textEl = document.getElementById('success-text');
   const orderTag = document.getElementById('order-tag');
+  const retryBtn = document.getElementById('retry-btn');
   const gemLeft = document.getElementById('gem-left');
   const gemRight = document.getElementById('gem-right');
   const xLeft = document.getElementById('x-left');
@@ -592,6 +601,7 @@ async function evaluateFinal(){
     textEl.textContent = '';
     await recordCompletion();
     orderTag.style.display = 'none';
+    retryBtn.style.display = 'none';
   } else {
     gemLeft.style.display = 'none';
     gemRight.style.display = 'none';
@@ -600,6 +610,7 @@ async function evaluateFinal(){
     titleEl.textContent = '出了點問題';
     textEl.textContent = '出了點問題';
     orderTag.style.display = 'none';
+    retryBtn.style.display = 'inline-block';
   }
 }
 </script>
