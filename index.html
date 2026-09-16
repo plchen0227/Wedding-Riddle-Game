@@ -599,9 +599,9 @@ async function evaluateFinal(){
     xRight.style.display = 'none';
     titleEl.innerHTML = '謝謝你<br>見證與守護我們的幸福';
     textEl.textContent = '';
-    await recordCompletion();
     orderTag.style.display = 'none';
     retryBtn.style.display = 'none';
+    await recordCompletion();
   } else {
     gemLeft.style.display = 'none';
     gemRight.style.display = 'none';
