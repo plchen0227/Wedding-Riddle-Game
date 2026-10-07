@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>怪盜キッドの予告状</title>
+<meta name="apple-mobile-web-app-title" content="怪盜キッドの予告状">
+<meta name="application-name" content="怪盜キッドの予告状">
+<link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%20%22%E6%80%AA%E7%9B%9C%E3%82%AD%E3%83%83%E3%83%89%E3%81%AE%E4%BA%88%E5%91%8A%E7%8A%B6%22%2C%20%22short_name%22%3A%20%22%E4%BA%88%E5%91%8A%E7%8A%B6%22%2C%20%22display%22%3A%20%22standalone%22%2C%20%22start_url%22%3A%20%22.%22%2C%20%22background_color%22%3A%20%22%23e9dcb8%22%2C%20%22theme_color%22%3A%20%22%23d3b981%22%7D">
+<meta name="theme-color" content="#d3b981">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ivory:#e9dcb8;
+    --ivory2:#faf5e4;
+    --border-gold:#d3b981;
+    --gold:#b8912f;
+    --gold-light:#d8b256;
+    --ink:#2a2620;
+    --muted:#8a7f63;
+    --danger:#b5473f;
+    --success:#5e7a4c;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--ivory);
+    color:var(--ink);
+    font-family:"Noto Serif TC","PMingLiU",serif;
+    min-height:100vh;
+    padding:1.5rem 0 4rem;
+  }
+  .moon{
+    width:64px;height:64px;
+    margin:0 auto 1.2rem;
+    display:block;
+  }
+  .wrap{
+    max-width:520px;
+    margin:0 auto;
+    padding:0 1.25rem;
+  }
+  .frame{
+    position:relative;
+    background:var(--ivory2);
+    border:16px solid var(--border-gold);
+    box-shadow: inset 0 0 0 1.5px var(--gold);
+    padding:1.8rem 1.4rem;
+    margin-top:1.6rem;
+  }
+  .corner{
+    position:absolute;
+    width:40px;
+    height:40px;
+    pointer-events:none;
+  }
+  .corner.tl{top:6px;left:6px;}
+  .corner.tr{top:6px;right:6px;transform:scaleX(-1);}
+  .corner.bl{bottom:6px;left:6px;transform:scaleY(-1);}
+  .corner.br{bottom:6px;right:6px;transform:scale(-1,-1);}
+  .intro-text{
+    font-size:0.95rem;
+    line-height:2;
+    color:var(--ink);
+    white-space:pre-line;
+    text-align:center;
+  }
+  .mincho{font-family:"Shippori Mincho","Noto Serif JP","Hiragino Mincho ProN","Yu Mincho","Noto Serif TC","PMingLiU",serif;}
+  .notice-title{
+    font-size:1.9rem;font-weight:700;letter-spacing:0.28em;
+    text-indent:0.28em;text-align:center;color:var(--ink);
+    margin:0.2rem 0 0.2rem;line-height:1.4;
+  }
+  .notice-rule{display:block;margin:0 auto 1.1rem;width:78%;max-width:260px;height:14px;}
+  .notice-body{
+    font-size:1.08rem;font-weight:600;letter-spacing:0.08em;
+    line-height:2.3;text-align:center;color:var(--ink);white-space:pre-line;
+  }
+  .name-gate input{
+    width:100%;
+    padding:0.7rem 0.9rem;
+    margin-top:0.8rem;
+    border:1px solid var(--border-gold);
+    background:#fffdf6;
+    color:var(--ink);
+    font-size:1rem;
+    font-family:inherit;
+  }
+  .name-gate input::placeholder{color:var(--muted);}
+  button{
+    font-family:inherit;
+    cursor:pointer;
+  }
+  .btn-gold{
+    width:100%;
+    margin-top:0.9rem;
+    padding:0.7rem 1rem;
+    border:1px solid var(--gold);
+    background:linear-gradient(180deg, var(--gold-light), var(--gold));
+    color:#fffdf6;
+    font-weight:700;
+    font-size:0.95rem;
+    letter-spacing:0.04em;
+  }
+  .btn-gold:active{transform:scale(0.98);}
+  .btn-ghost{
+    width:100%;
+    margin-top:0.6rem;
+    padding:0.6rem 1rem;
+    border:1px solid var(--border-gold);
+    background:transparent;
+    color:var(--gold);
+    font-size:0.85rem;
+  }
+  #game-area{display:none;}
+  .letter-bank{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin:0 0 1rem;
+  }
+  .letter-slot{
+    min-width:36px;height:auto;
+    padding:0.4rem 0.6rem;
+    border:1px solid var(--border-gold);
+    display:flex;align-items:center;justify-content:center;
+    font-size:0.85rem;font-weight:700;
+    color:var(--muted);
+    background:rgba(184,145,47,0.06);
+    word-break:break-all;
+  }
+  .letter-slot.filled{
+    color:#fffdf6;
+    background:linear-gradient(180deg, var(--gold-light), var(--gold));
+    border-color:var(--gold);
+  }
+  input.letter-slot{
+    width:31px;min-width:0;height:42px;padding:0;
+    text-align:center;font-size:1.3rem;font-weight:700;
+    color:var(--ink);font-family:inherit;border-radius:0;
+    background:rgba(184,145,47,0.06);text-transform:uppercase;
+  }
+  input.letter-slot:focus{outline:none;border-color:var(--gold);background:#fffdf6;}
+  input.letter-slot.filled,input.letter-slot.filled:focus{color:var(--ink);background:#f1e2b0;border-color:var(--gold);}
+  .given-answer{font-size:0.9rem;color:var(--muted);margin:0.2rem 0 0.4rem;}
+  .given-answer b{color:var(--gold);font-size:1.15rem;letter-spacing:0.1em;margin-left:0.2em;}
+  .puzzle-row input{min-width:0;flex:1;}
+  .puzzle-row button{flex:none;}
+  .letter-bank{gap:5px !important;}
+  .redo-btn{background:none;border:none;color:var(--muted);font-size:0.78rem;text-decoration:underline;cursor:pointer;padding:0;margin-top:0.5rem;font-family:inherit;}
+  .progress-label{
+    text-align:center;
+    font-size:0.78rem;
+    color:var(--muted);
+    letter-spacing:0.05em;
+    margin-bottom:0.7rem;
+  }
+  .puzzle{
+    margin-top:1.1rem;
+    padding:1.1rem 1.2rem;
+    border:1px solid var(--border-gold);
+    background:rgba(184,145,47,0.05);
+  }
+  .puzzle.solved{
+    border-color:var(--success);
+    background:rgba(94,122,76,0.08);
+  }
+  .puzzle-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:6px;
+    margin-bottom:0.5rem;
+  }
+  .puzzle-num{
+    font-size:0.85rem;
+    font-weight:700;
+    color:var(--gold);
+    letter-spacing:0.04em;
+  }
+  .puzzle-title{
+    font-size:1.02rem;
+    font-weight:400;
+    margin:0.15rem 0 0.5rem;
+    color:var(--ink);
+  }
+  .puzzle-body{
+    font-size:0.9rem;
+    line-height:1.8;
+    color:var(--muted);
+    margin-bottom:0.8rem;
+    white-space:pre-line;
+  }
+  .puzzle-row{
+    display:flex;
+    gap:8px;
+  }
+  .puzzle-row input{
+    flex:1;
+    padding:0.6rem 0.8rem;
+    border:1px solid var(--border-gold);
+    background:#fffdf6;
+    color:var(--ink);
+    font-size:0.95rem;
+    font-family:inherit;
+  }
+  .puzzle-row button{
+    padding:0.6rem 1rem;
+    border:1px solid var(--gold);
+    background:linear-gradient(180deg, var(--gold-light), var(--gold));
+    color:#fffdf6;
+    font-weight:700;
+    font-size:0.85rem;
+    white-space:nowrap;
+  }
+  .puzzle-msg{
+    font-size:0.82rem;
+    margin-top:0.5rem;
+    min-height:1.1em;
+  }
+  .puzzle-msg.err{color:var(--danger);}
+  .puzzle-msg.ok{color:var(--success);}
+  .solved-tag{
+    font-size:0.78rem;
+    color:var(--success);
+    letter-spacing:0.03em;
+  }
+  .story-text{
+    margin-top:0.6rem;
+    padding:0.7rem 0.9rem;
+    background:rgba(184,145,47,0.1);
+    border:1px solid var(--border-gold);
+    font-size:0.85rem;
+    line-height:1.8;
+    color:var(--ink);
+    white-space:pre-line;
+  }
+  #success-screen{
+    display:none;
+    text-align:center;
+  }
+  #success-screen h2{
+    color:var(--ink);
+    font-weight:700;
+    font-size:1.3rem;
+    line-height:1.9;
+    letter-spacing:0.03em;
+  }
+  #success-screen p{
+    color:var(--ink);
+    line-height:2;
+    font-size:0.95rem;
+    white-space:pre-line;
+  }
+  .order-tag{
+    display:inline-block;
+    margin-top:1rem;
+    padding:0.5rem 1.1rem;
+    border:1px solid var(--border-gold);
+    border-radius:20px;
+    font-size:0.85rem;
+    color:var(--gold);
+  }
+  footer{
+    text-align:center;
+    color:var(--muted);
+    font-size:0.7rem;
+    margin-top:2rem;
+    letter-spacing:0.05em;
+  }
+</style>
+</head>
+<body>
+
+<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;">怪盜基德婚禮解謎遊戲，賓客輸入姓名後依序解開七道謎題，收集字母拼出最終答案。</h2>
+
+<div class="wrap">
+
+  <!-- ============ 名字輸入 / 開場 ============ -->
+  <div id="gate-area" class="frame name-gate">
+    <svg class="corner tl" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 60 C4 30, 30 4, 60 4" fill="none" stroke="#b8912f" stroke-width="1.2"/>
+      <path d="M4 46 C4 24, 24 4, 46 4" fill="none" stroke="#d8b256" stroke-width="1"/>
+      <circle cx="4" cy="60" r="3" fill="none" stroke="#b8912f" stroke-width="1"/>
+      <circle cx="60" cy="4" r="3" fill="none" stroke="#b8912f" stroke-width="1"/>
+    </svg>
+    <svg class="corner tr" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 60 C4 30, 30 4, 60 4" fill="none" stroke="#b8912f" stroke-width="1.2"/>
+      <path d="M4 46 C4 24, 24 4, 46 4" fill="none" stroke="#d8b256" stroke-width="1"/>
+      <circle cx="4" cy="60" r="3" fill="none" stroke="#b8912f" stroke-width="1"/>
+      <circle cx="60" cy="4" r="3" fill="none" stroke="#b8912f" stroke-width="1"/>
+    </svg>
+    <svg class="corner bl" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 60 C4 30, 30 4, 60 4" fill="none" stroke="#b8912f" stroke-width="1.2"/>
+      <path d="M4 46 C4 24, 24 4, 46 4" fill="none" stroke="#d8b256" stroke-width="1"/>
+      <circle cx="4" cy="60" r="3" fill="none" stroke="#b8912f" stroke-width="1"/>
+      <circle cx="60" cy="4" r="3" fill="none" stroke="#b8912f" stroke-width="1"/>
+    </svg>
+    <svg class="corner br" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 60 C4 30, 30 4, 60 4" fill="none" stroke="#b8912f" stroke-width="1.2"/>
+      <path d="M4 46 C4 24, 24 4, 46 4" fill="none" stroke="#d8b256" stroke-width="1"/>
+      <circle cx="4" cy="60" r="3" fill="none" stroke="#b8912f" stroke-width="1"/>
+      <circle cx="60" cy="4" r="3" fill="none" stroke="#b8912f" stroke-width="1"/>
+    </svg>
+    <div class="mincho notice-title">予告状</div>
+    <svg class="notice-rule" viewBox="0 0 260 14" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M6 7 L16 3 M6 7 L16 11 M6 7 L112 7" fill="none" stroke="#b8912f" stroke-width="1" stroke-linecap="round"/>
+      <path d="M254 7 L244 3 M254 7 L244 11 M254 7 L148 7" fill="none" stroke="#b8912f" stroke-width="1" stroke-linecap="round"/>
+      <path d="M130 1.5 L136 7 L130 12.5 L124 7 Z" fill="#d8b256" stroke="#b8912f" stroke-width="1"/>
+      <circle cx="117" cy="7" r="1.4" fill="#b8912f"/><circle cx="143" cy="7" r="1.4" fill="#b8912f"/>
+    </svg>
+    <div class="mincho notice-body">午未之時
+我將在所有人的見證下
+取走
+<span style="font-size:0.84rem;letter-spacing:0.02em;white-space:nowrap;">溫柔與勇氣　所守護的　堅貞與智慧</span>
+
+怪盜キッド♥<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIIAAACFCAYAAACXBiBFAAAFZ0lEQVR4nO2dW1fjIBRGv3oZdWacJ///j/RSO46aeSgopSQhyeFwSL69VpbVRkLCDoEDtLuHhwcQcd4AXBc+xk4ysSvJxFbIO4DL2pnooYOgDFsW4RPCd9UArwAuANwuTCfO80EgTQDrFqFk9fwXQgUwkQv3s3M/b6QSbl2ERwD3wmlq1RJL2OFbBhFaEUHqpFso5CpYFWFuwbOgZ2JRhCEJWNCFsChCCAteiYvxXYhRRG8SikAAUATioAgEAEUgDssisMegiGURSB57iUQoQvvcSSRCEQgAikAcFIEAoAjEQREIAIpAHBSBAKAIxEERCACKQBwUgQCgCMRBEQgAikAcFIEAoAjEQREIAIpAHBSBAKAIxEERCACKQBwUgQCwLcJz7QxsCYsi+KVuP6vmYmNYFMHDtY+KWBaBKEIRCACKQBwUgQCgCMRBEQgAikAcFIEAoAjEQREIAIpAHBSBAKAIxGFdBM5JUMK6CL9qZ2ArWBWBcxGUsSoCUYYiEAAUgTgoQrts8ptg10jJ766eDEVYhuhdWROKkOYTel3YDwCXwe+vyF/TISbilkXgF48HrFWEZ8hEJVdRyDlc4Xiylp91Hc4LRCK/mynkHK5gWwLP1DyykCfS2qOhA2MfRWhFBN7hheHdRQBQBOKgCAQARSAOikAAtNNrIPKcxGYowrboC8ztKML6GYrKfsVn2EZYJ12whbzgWPh++4I1wjoYG4sZjcxaFsH6qGhtsqr8XCyLQL7JuSEWjcdYFuFQOwMVUR92tyzCLdb/aDBzfpZFWBtmCj0FRZBFc/azKEvjCB36+6ySvBVMO8UnjhNg4/Mb25qUAJCvEeY2cvY4n8u/D16PrQg64HgulyP7TWFTn82wVARfkI8A7mf8f9fzemxfK7wA+D2yj8V8nyFVI/wZeC+8ELvE3yQpNbk1dQ659O1vShCNxqKPEO6iv8V0A++tkaFrMJXF7RP2GmxRYiFPFpqjj6aqwkZIjhSWgDVCHha6hkO1xb+liXM+Qh61JRjjx9IEKEKbiD9mKUJ7FGlrUYRp1H5EFOtiWxKhdLCpZcKxnCIyWhLBKrXF/AxepyQQEcOqCLUvfooaj4Ww21r0+NZEqP0Mjqkp5ND4xiZ6DVbaCuHxXyoeewixG0dLhCWDKTWIJ86ODTVLUmXwTSvEPGfo1l8Q7fBuLJ/WsVOPgtTajqbjCHOq+7AAtGoGSxL0vT+032wsthFCNGWwIIHkvpOwLgJwOgzbQX4ia2rirYYEcZBoyjHF89fSMLR/Xl5DpkFVvLrNOG7O8fx5M7IYkOpP+21/vnvvvqkawIoEVXpKLdUIY9wh/yJ+QPfcpR49xWRtXYSciFutaGWq8Ofc7SpxhRZFGLqgtUPUYyKOyRC/v8rJqyWoHYZ+RLrdMTbpNGcxz5K1FJNpsUaojegnlWSgUsvVqBEkvvhbK9CUWuga5mFOb6NqvKAPzRrBP/+kFpeW+IyluXf7nLzEYyjxknrV9k7rbQTPHCH26L/bn3DsYnpyC0ViyZpWTOOE1tsIOaOUexxjDDlpxUwp2CfkrwiPo4VDeVBhDTVC3F6It1iC+I4bugOnTEjxK8Ln1gpVu7611j6+C6fdN6kztU3BT0iRbIv0NTqrUmuGkuQnm3hKtt6XpjnU6zBBzUdDiW5fPGSdc4yxfeYUVofjdLeaA1yT0BBh6EKXigGkhFg6j2FqXm+C108wKoCndK8h944sdYFCGcJ5DOF7S9COMhajpAhj8wNCSk9QTUUi5wzuDO2nPbQtSsmM5/TdQ7RmK8fHOOC0Gp/6/6uglAgSETYtbpWPZ5LSH0VHGsFaZHGV1W4LWF3pRJT5D4by+1erZwjOAAAAAElFTkSuQmCC" alt="" style="height:1.9em; width:auto; vertical-align:-0.5em; margin-left:0.2em;" aria-hidden="true"></div>
+    <div class="intro-text" style="text-align:center; font-size:0.85rem; color:var(--muted); margin-top:0;">請先留下你的名字，開始這場推理。</div>
+    <input type="text" id="guest-name" placeholder="請輸入你的名字" maxlength="20" autocomplete="off">
+    <button class="btn-gold" id="start-btn">開始解謎</button>
+    <div class="puzzle-msg err" id="gate-err"></div>
+  </div>
+
+  <!-- ============ 遊戲主體 ============ -->
+  <div id="game-area" class="frame">
+    <svg class="corner tl" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 60 C4 30, 30 4, 60 4" fill="none" stroke="#b8912f" stroke-width="1.2"/>
+      <path d="M4 46 C4 24, 24 4, 46 4" fill="none" stroke="#d8b256" stroke-width="1"/>
+      <circle cx="4" cy="60" r="3" fill="none" stroke="#b8912f" stroke-width="1"/>
+      <circle cx="60" cy="4" r="3" fill="none" stroke="#b8912f" stroke-width="1"/>
+    </svg>
+    <svg class="corner tr" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 60 C4 30, 30 4, 60 4" fill="none" stroke="#b8912f" stroke-width="1.2"/>
+      <path d="M4 46 C4 24, 24 4, 46 4" fill="none" stroke="#d8b256" stroke-width="1"/>
+      <circle cx="4" cy="60" r="3" fill="none" stroke="#b8912f" stroke-width="1"/>
+      <circle cx="60" cy="4" r="3" fill="none" stroke="#b8912f" stroke-width="1"/>
+    </svg>
+    <svg class="corner bl" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 60 C4 30, 30 4, 60 4" fill="none" stroke="#b8912f" stroke-width="1.2"/>
+      <path d="M4 46 C4 24, 24 4, 46 4" fill="none" stroke="#d8b256" stroke-width="1"/>
+      <circle cx="4" cy="60" r="3" fill="none" stroke="#b8912f" stroke-width="1"/>
+      <circle cx="60" cy="4" r="3" fill="none" stroke="#b8912f" stroke-width="1"/>
+    </svg>
+    <svg class="corner br" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 60 C4 30, 30 4, 60 4" fill="none" stroke="#b8912f" stroke-width="1.2"/>
+      <path d="M4 46 C4 24, 24 4, 46 4" fill="none" stroke="#d8b256" stroke-width="1"/>
+      <circle cx="4" cy="60" r="3" fill="none" stroke="#b8912f" stroke-width="1"/>
+      <circle cx="60" cy="4" r="3" fill="none" stroke="#b8912f" stroke-width="1"/>
+    </svg>
+
+    <div class="progress-label" id="progress-label">已作答 0 / 7 題</div>
+    <div class="letter-bank" id="letter-bank"></div>
+
+    <div id="puzzle-list"></div>
+
+    <button class="btn-gold" id="reveal-final-btn" style="display:none; margin-top:1.4rem;">查看結果</button>
+
+  </div>
+
+  <!-- ============ 完成畫面 ============ -->
+  <div id="success-screen" class="frame">
+    <svg class="corner tl" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 60 C4 30, 30 4, 60 4" fill="none" stroke="#b8912f" stroke-width="1.2"/>
+      <path d="M4 46 C4 24, 24 4, 46 4" fill="none" stroke="#d8b256" stroke-width="1"/>
+      <circle cx="4" cy="60" r="3" fill="none" stroke="#b8912f" stroke-width="1"/>
+      <circle cx="60" cy="4" r="3" fill="none" stroke="#b8912f" stroke-width="1"/>
+    </svg>
+    <svg class="corner tr" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 60 C4 30, 30 4, 60 4" fill="none" stroke="#b8912f" stroke-width="1.2"/>
+      <path d="M4 46 C4 24, 24 4, 46 4" fill="none" stroke="#d8b256" stroke-width="1"/>
+      <circle cx="4" cy="60" r="3" fill="none" stroke="#b8912f" stroke-width="1"/>
+      <circle cx="60" cy="4" r="3" fill="none" stroke="#b8912f" stroke-width="1"/>
+    </svg>
+    <svg class="corner bl" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 60 C4 30, 30 4, 60 4" fill="none" stroke="#b8912f" stroke-width="1.2"/>
+      <path d="M4 46 C4 24, 24 4, 46 4" fill="none" stroke="#d8b256" stroke-width="1"/>
+      <circle cx="4" cy="60" r="3" fill="none" stroke="#b8912f" stroke-width="1"/>
+      <circle cx="60" cy="4" r="3" fill="none" stroke="#b8912f" stroke-width="1"/>
+    </svg>
+    <svg class="corner br" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 60 C4 30, 30 4, 60 4" fill="none" stroke="#b8912f" stroke-width="1.2"/>
+      <path d="M4 46 C4 24, 24 4, 46 4" fill="none" stroke="#d8b256" stroke-width="1"/>
+      <circle cx="4" cy="60" r="3" fill="none" stroke="#b8912f" stroke-width="1"/>
+      <circle cx="60" cy="4" r="3" fill="none" stroke="#b8912f" stroke-width="1"/>
+    </svg>
+    <svg class="moon" width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="32" cy="32" r="32" fill="#d8b256"/>
+
+      <!-- 左：海藍寶石（八角形切面） -->
+      <g id="gem-left">
+        <polygon points="17.01,34.49 13.49,38.01 8.51,38.01 4.99,34.49 4.99,29.51 8.51,25.99 13.49,25.99 17.01,29.51" fill="#7fc3d8" stroke="#faf5e4" stroke-width="0.6"/>
+        <polygon points="17.01,34.49 13.49,38.01 12.15,34.77 13.77,33.15" fill="#a9dcea"/>
+        <polygon points="13.49,38.01 8.51,38.01 9.85,34.77 12.15,34.77" fill="#7fc3d8"/>
+        <polygon points="8.51,38.01 4.99,34.49 8.23,33.15 9.85,34.77" fill="#a9dcea"/>
+        <polygon points="4.99,34.49 4.99,29.51 8.23,30.85 8.23,33.15" fill="#7fc3d8"/>
+        <polygon points="4.99,29.51 8.51,25.99 9.85,29.23 8.23,30.85" fill="#a9dcea"/>
+        <polygon points="8.51,25.99 13.49,25.99 12.15,29.23 9.85,29.23" fill="#7fc3d8"/>
+        <polygon points="13.49,25.99 17.01,29.51 13.77,30.85 12.15,29.23" fill="#a9dcea"/>
+        <polygon points="17.01,29.51 17.01,34.49 13.77,33.15 13.77,30.85" fill="#7fc3d8"/>
+        <polygon points="13.77,33.15 12.15,34.77 9.85,34.77 8.23,33.15 8.23,30.85 9.85,29.23 12.15,29.23 13.77,30.85" fill="#c9ecf4"/>
+      </g>
+      <g id="x-left" style="display:none;">
+        <line x1="6" y1="26" x2="16" y2="38" stroke="#c0392b" stroke-width="3" stroke-linecap="round"/>
+        <line x1="16" y1="26" x2="6" y2="38" stroke="#c0392b" stroke-width="3" stroke-linecap="round"/>
+      </g>
+
+      <!-- 右：海藍寶石（八角形切面） -->
+      <g id="gem-right">
+        <polygon points="59.01,34.49 55.49,38.01 50.51,38.01 46.99,34.49 46.99,29.51 50.51,25.99 55.49,25.99 59.01,29.51" fill="#7fc3d8" stroke="#faf5e4" stroke-width="0.6"/>
+        <polygon points="59.01,34.49 55.49,38.01 54.15,34.77 55.77,33.15" fill="#a9dcea"/>
+        <polygon points="55.49,38.01 50.51,38.01 51.85,34.77 54.15,34.77" fill="#7fc3d8"/>
+        <polygon points="50.51,38.01 46.99,34.49 50.23,33.15 51.85,34.77" fill="#a9dcea"/>
+        <polygon points="46.99,34.49 46.99,29.51 50.23,30.85 50.23,33.15" fill="#7fc3d8"/>
+        <polygon points="46.99,29.51 50.51,25.99 51.85,29.23 50.23,30.85" fill="#a9dcea"/>
+        <polygon points="50.51,25.99 55.49,25.99 54.15,29.23 51.85,29.23" fill="#7fc3d8"/>
+        <polygon points="55.49,25.99 59.01,29.51 55.77,30.85 54.15,29.23" fill="#a9dcea"/>
+        <polygon points="59.01,29.51 59.01,34.49 55.77,33.15 55.77,30.85" fill="#7fc3d8"/>
+        <polygon points="55.77,33.15 54.15,34.77 51.85,34.77 50.23,33.15 50.23,30.85 51.85,29.23 54.15,29.23 55.77,30.85" fill="#c9ecf4"/>
+      </g>
+      <g id="x-right" style="display:none;">
+        <line x1="48" y1="26" x2="58" y2="38" stroke="#c0392b" stroke-width="3" stroke-linecap="round"/>
+        <line x1="58" y1="26" x2="48" y2="38" stroke="#c0392b" stroke-width="3" stroke-linecap="round"/>
+      </g>
+
+      <!-- 中：藍寶石（八角形切面，較大） -->
+      <polygon points="42.16,36.21 36.21,42.16 27.79,42.16 21.84,36.21 21.84,27.79 27.79,21.84 36.21,21.84 42.16,27.79" fill="#2d4fa0" stroke="#faf5e4" stroke-width="0.7"/>
+      <polygon points="42.16,36.21 36.21,42.16 33.91,36.62 36.62,33.91" fill="#5c7fd6"/>
+      <polygon points="36.21,42.16 27.79,42.16 30.09,36.62 33.91,36.62" fill="#2d4fa0"/>
+      <polygon points="27.79,42.16 21.84,36.21 27.38,33.91 30.09,36.62" fill="#5c7fd6"/>
+      <polygon points="21.84,36.21 21.84,27.79 27.38,30.09 27.38,33.91" fill="#2d4fa0"/>
+      <polygon points="21.84,27.79 27.79,21.84 30.09,27.38 27.38,30.09" fill="#5c7fd6"/>
+      <polygon points="27.79,21.84 36.21,21.84 33.91,27.38 30.09,27.38" fill="#2d4fa0"/>
+      <polygon points="36.21,21.84 42.16,27.79 36.62,30.09 33.91,27.38" fill="#5c7fd6"/>
+      <polygon points="42.16,27.79 42.16,36.21 36.62,33.91 36.62,30.09" fill="#2d4fa0"/>
+      <polygon points="36.62,33.91 33.91,36.62 30.09,36.62 27.38,33.91 27.38,30.09 30.09,27.38 33.91,27.38 36.62,30.09" fill="#7d9ce8"/>
+    </svg>
+    <h2 id="result-title">真相大白</h2>
+    <p id="success-text"></p>
+    <div class="order-tag" id="order-tag" style="display:none;"></div>
+    <button class="btn-ghost" id="retry-btn" style="display:none;">偷改一下</button>
+  </div>
+
+  <footer>南港雅悅旗艦館 馥儷廳 · 2026.10.25</footer>
+
+</div>
+
+<script>
+/* ================= 設定區：之後把題目內容改在這裡 ================= */
+
+const CONFIG = {
+  // 最終答案（大寫），必須恰好由下面7題的字母組成
+  finalWord: "TURKIYE",
+
+  // Google Apps Script 網址，用來記錄賓客完成的姓名與時間
+  googleScriptUrl: "https://script.google.com/macros/s/AKfycbywTomgpBtWx3CEPazB1F25RnMA1sgetbs7-bLUVrA2H8T42noY6RjFngtfCBr2n6OZlw/exec",
+
+  puzzles: [
+    {
+      title: "怪盜Wordle？",
+      body: "【題目內容預留位置，之後替換成實際謎題文字】",
+      answer: "K",
+      letter: "K",
+      story: "海藍寶石，雙魚座的誕生石，象徵溫柔與勇氣；\n藍寶石，處女座的誕生石，象徵堅貞與勇氣。\n戒指以銀河為背景，由兩顆海藍寶石與一顆藍寶石組成，代表新郎守護新娘，也彼此相互輝映。"
+    },
+    {
+      title: "怪盜Wordle？",
+      body: "【題目內容預留位置，之後替換成實際謎題文字】",
+      answer: "I",
+      letter: "I",
+      story: "我都唸  IKEA"
+    },
+    {
+      title: "新郎第一次唱歌給新娘聽的回憶",
+      body: "【題目內容預留位置，之後替換成實際謎題文字】",
+      answer: "U",
+      letter: "U",
+      story: "新郎與新娘剛在一起沒多久，新郎就去北海道打工度假與新娘分隔兩地，他們將道不完的想念化為歌曲唱給彼此聽。"
+    },
+    {
+      title: "今天是新郎與新娘在一起的第？天",
+      body: "【題目內容預留位置，之後替換成實際謎題文字】",
+      answer: "Y",
+      letter: "Y",
+      story: "今天是我們在一起的第幾天是情侶間的隨堂考，還好有TimeTree可以偷看答案。"
+    },
+    {
+      title: "新娘與菠蘿麵包",
+      body: "【題目內容預留位置，之後替換成實際謎題文字】",
+      answer: "R",
+      letter: "R",
+      story: "新郎的各種ID總是使用メロンパン，因為，Melon是他的，胖也是。"
+    },
+    {
+      title: "偷走與守護",
+      body: "【題目內容預留位置，之後替換成實際謎題文字】",
+      answer: "E",
+      letter: "E",
+      story: "蘆屋的向日葵即使已不存在，人們依舊保存著它美麗的記憶。\n<em>Looking back on our days together,\nI was like a Kid in a candy store.</em>\n今天要取走的從來就不是戒指，而是娶走Melon與守護她，\n以及分享我們之間的點滴，讓這份幸福回憶也有你們參與。"
+    },
+    {
+      title: "真相永遠只有一個",
+      body: "【題目內容預留位置，之後替換成實際謎題文字】",
+      answer: "T",   // 賓客要輸入的正解（不分大小寫）
+      letter: "T",
+      story: "各位偵探們，在了解新郎與新娘小故事的同時，把字母排序到正確的位置，一起解開怪盜基德預告信的謎底吧！"
+    }
+  ]
+};
+
+/* ================= 以下為程式邏輯，一般不需修改 ================= */
+
+let guestName = "";
+let solvedFlags = new Array(CONFIG.puzzles.length).fill(false);
+let answersGiven = new Array(CONFIG.puzzles.length).fill("");
+
+function normalize(s){
+  return (s || "").trim().toUpperCase();
+}
+
+let typedLetters = new Array(CONFIG.puzzles.length).fill("");
+
+function updateStatus(){
+  const count = solvedFlags.filter(Boolean).length;
+  document.getElementById('progress-label').textContent = `已作答 ${count} / ${CONFIG.puzzles.length} 題`;
+  const full = typedLetters.every(l => l);
+  document.getElementById('reveal-final-btn').style.display = full ? 'block' : 'none';
+  document.querySelectorAll('#letter-bank input').forEach((el, i) => {
+    el.classList.toggle('filled', !!typedLetters[i]);
+  });
+}
+
+function renderLetterBank(){
+  const bank = document.getElementById('letter-bank');
+  bank.innerHTML = "";
+  CONFIG.puzzles.forEach((p, i) => {
+    const el = document.createElement('input');
+    el.type = 'text';
+    el.maxLength = 1;
+    el.className = 'letter-slot';
+    el.value = typedLetters[i] || '';
+    el.setAttribute('autocomplete', 'off');
+    el.setAttribute('autocapitalize', 'characters');
+    el.setAttribute('aria-label', '答案字母 ' + (i+1));
+    el.addEventListener('input', () => {
+      const v = (el.value || '').trim().toUpperCase().slice(-1);
+      el.value = v;
+      typedLetters[i] = v;
+      updateStatus();
+      saveProgress();
+      if(v && i < CONFIG.puzzles.length - 1){
+        bank.children[i+1].focus();
+      }
+    });
+    el.addEventListener('keydown', (e) => {
+      if(e.key === 'Backspace' && !el.value && i > 0){
+        bank.children[i-1].focus();
+      }
+    });
+    bank.appendChild(el);
+  });
+  updateStatus();
+}
+
+function escapeHtml(t){
+  return String(t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderPuzzles(){
+  const list = document.getElementById('puzzle-list');
+  list.innerHTML = "";
+  CONFIG.puzzles.forEach((p, i) => {
+    const div = document.createElement('div');
+    div.className = 'puzzle' + (solvedFlags[i] ? ' solved' : '');
+    const isCorrect = solvedFlags[i] && normalize(answersGiven[i]) === normalize(p.answer);
+    div.innerHTML = `
+      <div class="puzzle-head">
+        <span class="puzzle-num">${p.title}</span>
+        ${solvedFlags[i] ? '<span class="solved-tag">已送出答案</span>' : ''}
+      </div>
+      ${solvedFlags[i] ? `<div class="given-answer">你的答案：<b>${escapeHtml(answersGiven[i].toUpperCase())}</b></div>` : ''}
+      ${isCorrect ? `<div class="story-text">${p.story || ''}</div>` : ''}
+      ${solvedFlags[i] ? `<button class="redo-btn" data-redo="${i}">修改答案</button>` : `
+        <div class="puzzle-row">
+          <input type="text" id="pz-input-${i}" placeholder="輸入答案" value="${escapeHtml(answersGiven[i] || '')}" autocomplete="off">
+          <button data-idx="${i}">提交</button>
+        </div>
+        <div class="puzzle-msg" id="pz-msg-${i}"></div>
+      `}
+    `;
+    list.appendChild(div);
+  });
+
+  list.querySelectorAll('button[data-redo]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      solvedFlags[parseInt(btn.getAttribute('data-redo'))] = false;
+      updateStatus();
+      renderPuzzles();
+      saveProgress();
+    });
+  });
+  list.querySelectorAll('button[data-idx]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.getAttribute('data-idx'));
+      submitPuzzle(idx);
+    });
+  });
+}
+
+function submitPuzzle(idx){
+  const input = document.getElementById(`pz-input-${idx}`);
+  const msg = document.getElementById(`pz-msg-${idx}`);
+  const val = (input.value || "").trim();
+  if(!val){
+    msg.textContent = "請先輸入答案";
+    msg.className = "puzzle-msg err";
+    return;
+  }
+  answersGiven[idx] = val;
+  solvedFlags[idx] = true;
+  updateStatus();
+  renderPuzzles();
+  saveProgress();
+}
+
+async function saveProgress(){
+  if(!guestName) return;
+  try{
+    await window.storage.set('progress:' + guestName, JSON.stringify({
+      name: guestName,
+      solvedFlags: solvedFlags,
+      answersGiven: answersGiven,
+      typedLetters: typedLetters,
+      updatedAt: Date.now()
+    }), true);
+  }catch(e){
+    console.error('saveProgress failed', e);
+  }
+}
+
+async function loadProgress(name){
+  try{
+    const result = await window.storage.get('progress:' + name, true);
+    if(result && result.value){
+      const data = JSON.parse(result.value);
+      if(Array.isArray(data.solvedFlags) && data.solvedFlags.length === CONFIG.puzzles.length){
+        solvedFlags = data.solvedFlags;
+      }
+      if(Array.isArray(data.answersGiven) && data.answersGiven.length === CONFIG.puzzles.length){
+        answersGiven = data.answersGiven;
+      }
+      if(Array.isArray(data.typedLetters) && data.typedLetters.length === CONFIG.puzzles.length){
+        typedLetters = data.typedLetters;
+      }
+    }
+  }catch(e){
+    // 沒有紀錄，維持初始狀態
+  }
+}
+
+async function recordCompletion(){
+  if(!CONFIG.googleScriptUrl) return;
+  try{
+    const url = CONFIG.googleScriptUrl + '?name=' + encodeURIComponent(guestName);
+    await fetch(url, { mode: 'no-cors' });
+  }catch(e){
+    console.error('recordCompletion failed', e);
+  }
+}
+
+document.getElementById('start-btn').addEventListener('click', async () => {
+  const nameInput = document.getElementById('guest-name');
+  const err = document.getElementById('gate-err');
+  const name = (nameInput.value || "").trim();
+  if(!name){
+    err.textContent = "請先輸入你的名字";
+    return;
+  }
+  err.textContent = "";
+  guestName = name;
+
+  await loadProgress(guestName);
+
+  document.getElementById('gate-area').style.display = 'none';
+  document.getElementById('game-area').style.display = 'block';
+  renderLetterBank();
+  renderPuzzles();
+});
+
+document.getElementById('reveal-final-btn').addEventListener('click', () => {
+  evaluateFinal();
+});
+
+document.getElementById('retry-btn').addEventListener('click', () => {
+  document.getElementById('success-screen').style.display = 'none';
+  document.getElementById('game-area').style.display = 'block';
+  renderLetterBank();
+  renderPuzzles();
+});
+
+async function evaluateFinal(){
+  const allCorrect = typedLetters.join('').toUpperCase() === CONFIG.finalWord.toUpperCase();
+
+  document.getElementById('game-area').style.display = 'none';
+  document.getElementById('success-screen').style.display = 'block';
+
+  const titleEl = document.getElementById('result-title');
+  const textEl = document.getElementById('success-text');
+  const orderTag = document.getElementById('order-tag');
+  const retryBtn = document.getElementById('retry-btn');
+  const gemLeft = document.getElementById('gem-left');
+  const gemRight = document.getElementById('gem-right');
+  const xLeft = document.getElementById('x-left');
+  const xRight = document.getElementById('x-right');
+
+  if(allCorrect){
+    gemLeft.style.display = '';
+    gemRight.style.display = '';
+    xLeft.style.display = 'none';
+    xRight.style.display = 'none';
+    titleEl.innerHTML = '謝謝你<br>見證與守護我們的幸福';
+    textEl.textContent = '';
+    orderTag.style.display = 'none';
+    retryBtn.style.display = 'none';
+    await recordCompletion();
+  } else {
+    gemLeft.style.display = 'none';
+    gemRight.style.display = 'none';
+    xLeft.style.display = '';
+    xRight.style.display = '';
+    titleEl.textContent = '出了點問題';
+    textEl.textContent = '提示：如果提交的答案正確，會出現一段新郎新娘小故事，回去檢查答案，並調整上方字母的順序吧~';
+    orderTag.style.display = 'none';
+    retryBtn.style.display = 'inline-block';
+  }
+}
+</script>
+
+</body>
+</html>
